@@ -41,21 +41,21 @@ class UserSerializer(serializers.ModelSerializer):
         # return [PersonalizedEventSerializer(ev).data for ev in qset]
 
 class PersonalizedEventSerializer(serializers.ModelSerializer):
-    # create_pe = serializers.SerializerMethodField()
+    create_pe = serializers.SerializerMethodField()
 
     class Meta:
         model = models.PersonalizedEvent
         fields = '__all__'
 
 
-    # def get_create_pe(self, validated_data):
-    #     try:
-    #         id = validated_data['context_id']
-    #     except Exception:
-    #         return
-    #     users = models.User.objects.filter(context__id=id)
-    #     event = models.Event.objects.filter(id=validated_data['event_id'])
-    #
-    #     for user in users:
-    #         models.PersonalizedEvent.objects.create(event=event[0], user=user)
-    #     return
+    def get_create_pe(self, validated_data):
+        try:
+            id = validated_data['context_id']
+        except Exception:
+            return
+        users = models.User.objects.filter(context__id=id)
+        event = models.Event.objects.filter(id=validated_data['event_id'])
+
+        for user in users:
+            models.PersonalizedEvent.objects.create(event=event[0], user=user)
+

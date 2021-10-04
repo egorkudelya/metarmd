@@ -71,7 +71,6 @@ class EventView(APIView):
 
 
     def post(self, request,  **kwargs):
-        # print(kwargs)
         subject_id = kwargs["subject_id"]
         try:
             Subject.objects.get(pk=subject_id)
@@ -81,12 +80,9 @@ class EventView(APIView):
         serializer = serializers.EventSerializer(data=request.data)
         if serializer.is_valid():
             m = serializer.save(subject_id=subject_id)
-            # vd = {"context_id": kwargs['context_id'],
-            #       "event_id": m.id}
-            users = User.objects.filter(context__id=kwargs['context_id'])
-            for user in users:
-                PersonalizedEvent.objects.create(event=m, user=user)
-
+            vd = {"context_id": kwargs['context_id'],
+                  "event_id": m.id}
+            personalized = serializers.PersonalizedEventSerializer.get_create_pe(self,validated_data=vd)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
