@@ -81,8 +81,8 @@ class EventView(APIView):
         serializer = serializers.EventSerializer(data=request.data)
         if serializer.is_valid():
             m = serializer.save(subject_id=subject_id)
-            vd = {"context_id": kwargs['context_id'],
-                  "event_id": m.id}
+            # vd = {"context_id": kwargs['context_id'],
+            #       "event_id": m.id}
             users = User.objects.filter(context__id=kwargs['context_id'])
             for user in users:
                 PersonalizedEvent.objects.create(event=m, user=user)
