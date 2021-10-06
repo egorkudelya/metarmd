@@ -24,21 +24,30 @@ class EventSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 class UserSerializer(serializers.ModelSerializer):
-    # events = serializers.SerializerMethodField()
-    events = EventSerializer(many=True)
 
     class Meta:
         model = models.User
-        fields = ['id', 'name', 'events']
+        fields = ['id', 'name']
 
-    def get_events(self, user_instance):
-        qset = models.PersonalizedEvent.objects.filter(user=user_instance)
+    def to_representation(self, instance):
+        qset = models.PersonalizedEvent.objects.filter(user=instance)
         a = [ev for ev in qset]
         events = []
         for cl in a:
-            events.append(cl.event)
-        return [EventSerializer(ev).data for ev in events]
-        # return [PersonalizedEventSerializer(ev).data for ev in qset]
+            events.append(
+                {
+                'name': cl.event.name,
+                'deadline' : cl.event.deadline,
+                'urgency' : cl.event.urgency,
+                'is_completed' : cl.is_completed
+                }
+            )
+
+        return {
+            'id': instance.id,
+            'name': instance.name,
+            'events': events
+        }
 
 class PersonalizedEventSerializer(serializers.ModelSerializer):
     create_pe = serializers.SerializerMethodField()
@@ -58,4 +67,3 @@ class PersonalizedEventSerializer(serializers.ModelSerializer):
 
         for user in users:
             models.PersonalizedEvent.objects.create(event=event[0], user=user)
-
