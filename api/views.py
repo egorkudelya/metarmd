@@ -95,3 +95,24 @@ class UserEventsView(APIView):
         user = User.objects.filter(id=user_id)
         serializer = serializers.UserSerializer(user, many=True)
         return Response(serializer.data)
+
+
+class MainContextEndPoint(APIView):
+
+    def get(self, request, **kwargs):
+        context_id = kwargs['context_id']
+
+        queryset = User.objects.filter(context__id=context_id)
+        serializer = serializers.UserSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class MainUserEndPoint(APIView):
+
+    def get(self, request, **kwargs):
+        context_id = kwargs['context_id']
+        user_id = kwargs['user_id']
+
+        queryset = User.objects.filter(context__id=context_id, id=user_id)
+        serializer = serializers.UserSerializer(queryset, many=True)
+        return Response(serializer.data)

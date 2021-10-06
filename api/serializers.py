@@ -21,7 +21,7 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Event
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'urgency']
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -67,3 +67,4 @@ class PersonalizedEventSerializer(serializers.ModelSerializer):
 
         for user in users:
             models.PersonalizedEvent.objects.create(event=event[0], user=user)
+
