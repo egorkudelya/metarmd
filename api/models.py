@@ -8,7 +8,7 @@ class Context(models.Model):
     name = models.CharField(max_length=120, unique=True, verbose_name="Context")
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     description = models.TextField(max_length=250)
-    creator_tag = models.CharField(max_length=120, unique=True, verbose_name="Context")
+    creator_tag = models.CharField(max_length=120, unique=False, verbose_name="Context")
 
     def __str__(self):
         return self.name
@@ -45,6 +45,7 @@ class User(models.Model):
     name = models.CharField(max_length=120, unique=True, verbose_name="User")
     context = models.ForeignKey(Context, on_delete=models.CASCADE)
     events = models.ManyToManyField(Event, through='PersonalizedEvent')
+    notifications = models.BooleanField(default=True)
 
     def __str__(self):
         return self.id

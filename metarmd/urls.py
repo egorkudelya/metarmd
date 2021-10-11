@@ -8,6 +8,6 @@ urlpatterns = [
     path('contexts/<str:context_id>/users/', views.UserView.as_view()),
     path('contexts/<str:context_id>/users/<str:user_id>/events/', views.UserEventsView.as_view()),
     path('contexts/<str:context_id>/users/<str:user_id>/events/', views.UserEventsView.as_view()),
-    path('contexts/<str:context_id>/', views.MainContextEndPoint.as_view()),
     path('contexts/<str:context_id>/users/<str:user_id>/', views.MainUserEndPoint.as_view()),
+    path('contexts/<str:context_id>/', views.MainContextEndPoint.as_view()),  # internal port, used only by reminder api
 ]

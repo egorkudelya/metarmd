@@ -5,6 +5,11 @@ from . import serializers
 from .models import Context, User, Event, Subject, PersonalizedEvent
 from django.http import Http404
 from rest_framework import status
+import requests
+
+ALIEN_URLS = {
+    'post_context': 'http://127.0.0.1:7000/reminder/6a9f3290-cf2d-496c-9bcd-4d930e7cc632/contexts/',
+}
 
 
 class ContextView(APIView):
@@ -18,8 +23,16 @@ class ContextView(APIView):
         serializer = serializers.ContextSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            internal_url = ALIEN_URLS.get('post_context')
+            context_data = {'id': serializer.data['id']}
+
+            post = requests.post(internal_url, data=context_data)
+            if post.status_code is not '200':
+                Response(status=status.HTTP_400_BAD_REQUEST)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class SubjectView(APIView):
 
@@ -69,8 +82,7 @@ class EventView(APIView):
         serializer = serializers.EventSerializer(events, many=True)
         return Response(serializer.data)
 
-
-    def post(self, request,  **kwargs):
+    def post(self, request, **kwargs):
         subject_id = kwargs["subject_id"]
         try:
             Subject.objects.get(pk=subject_id)
@@ -82,7 +94,7 @@ class EventView(APIView):
             m = serializer.save(subject_id=subject_id)
             vd = {"context_id": kwargs['context_id'],
                   "event_id": m.id}
-            personalized = serializers.PersonalizedEventSerializer.get_create_pe(self,validated_data=vd)
+            serializers.PersonalizedEventSerializer.get_create_pe(self, validated_data=vd)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -12,6 +12,8 @@ class ContextTests(APITestCase):
         url = 'http://127.0.0.1:8000/contexts/'
         data = {'name': 'KA-02'}
         response = self.client.post(url, data, format='json')
+        # data = response.data
+        # data1 = json.loads(data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(models.Context.objects.count(), 1)
         self.assertEqual(models.Context.objects.get().name, 'KA-02')
