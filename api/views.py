@@ -6,6 +6,7 @@ from .models import Context, User, Event, Subject, PersonalizedEvent
 from django.http import Http404
 from rest_framework import status
 import requests
+from .contextstrategy import ContextStrategy, FirstClassSubject, SecondClassSubject, DefaultStrategy
 
 ALIEN_URLS = {
     'post_context': 'http://127.0.0.1:7000/reminder/6a9f3290-cf2d-496c-9bcd-4d930e7cc632/contexts/',
@@ -27,7 +28,7 @@ class ContextView(APIView):
             context_data = {'id': serializer.data['id']}
 
             post = requests.post(internal_url, data=context_data)
-            if post.status_code is not '200':
+            if post.status_code != '200':
                 Response(status=status.HTTP_400_BAD_REQUEST)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -47,11 +48,24 @@ class SubjectView(APIView):
         except Context.DoesNotExist:
             raise Http404
 
-        serializer = serializers.SubjectSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(context_id=context_id)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        strategy = ContextStrategy()
+
+        if not request.data:
+            raise Http404
+
+        if context_id[0] == "0":
+            strategy.setStrategy(FirstClassSubject())
+        elif context_id[0] == "1":
+            strategy.setStrategy(SecondClassSubject())
+        else:
+            strategy.setStrategy(DefaultStrategy())
+        return strategy.executeStrategy(request, context_id)
+
+        # serializer = serializers.SubjectSerializer(data=request.data)
+        # if serializer.is_valid():
+        #     serializer.save(context_id=context_id)
+        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserView(APIView):
@@ -107,6 +121,15 @@ class UserEventsView(APIView):
         user = User.objects.filter(id=user_id)
         serializer = serializers.UserSerializer(user, many=True)
         return Response(serializer.data)
+
+
+class PersonalizedEventView(APIView):
+
+    def get(self, request, **kwargs):
+        pass
+
+    def patch(self, request, **kwargs):
+        pass
 
 
 class MainContextEndPoint(APIView):

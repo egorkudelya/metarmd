@@ -18,13 +18,12 @@ class SubjectSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.Event
         fields = ['id', 'name', 'urgency']
 
-class UserSerializer(serializers.ModelSerializer):
 
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
         fields = ['id', 'name']
@@ -36,10 +35,11 @@ class UserSerializer(serializers.ModelSerializer):
         for cl in a:
             events.append(
                 {
-                'name': cl.event.name,
-                'deadline' : cl.event.deadline,
-                'urgency' : cl.event.urgency,
-                'is_completed' : cl.is_completed
+                    'id': cl.event.id,
+                    'name': cl.event.name,
+                    'deadline': cl.event.deadline,
+                    'urgency': cl.event.urgency,
+                    'is_completed': cl.is_completed
                 }
             )
 
@@ -49,13 +49,13 @@ class UserSerializer(serializers.ModelSerializer):
             'events': events
         }
 
+
 class PersonalizedEventSerializer(serializers.ModelSerializer):
     create_pe = serializers.SerializerMethodField()
 
     class Meta:
         model = models.PersonalizedEvent
         fields = '__all__'
-
 
     def get_create_pe(self, validated_data):
         try:
@@ -67,4 +67,3 @@ class PersonalizedEventSerializer(serializers.ModelSerializer):
 
         for user in users:
             models.PersonalizedEvent.objects.create(event=event[0], user=user)
-
