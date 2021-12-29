@@ -58,7 +58,7 @@ class SubjectView(APIView):
         elif context_id[0] == "1":
             strategy.setStrategy(SecondClassSubject())
         else:
-            strategy.setStrategy(DefaultStrategy())
+            strategy.setStrategy()
         return strategy.executeStrategy(request, context_id)
 
         # serializer = serializers.SubjectSerializer(data=request.data)
