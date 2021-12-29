@@ -41,7 +41,7 @@ class FirstClassSubject(AbstractStrategy):
 
 class SecondClassSubject(AbstractStrategy):
 
-    def createSerializer(self, request, context_id) -> Response: # The second creation method
+    def createSerializer(self, request, context_id) -> Response:  # The second creation method
         request.data["name"] = request.data["name"] + "1"
 
         serializer = serializers.SubjectSerializer(data=request.data)
@@ -50,9 +50,10 @@ class SecondClassSubject(AbstractStrategy):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class DefaultStrategy(AbstractStrategy):
 
-    def createSerializer(self, request, context_id) -> Response: # Default creation method
+    def createSerializer(self, request, context_id) -> Response:  # Default creation method
         request.data["name"] = request.data["name"] + "2"
 
         serializer = serializers.SubjectSerializer(data=request.data)

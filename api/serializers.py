@@ -67,3 +67,5 @@ class PersonalizedEventSerializer(serializers.ModelSerializer):
 
         for user in users:
             models.PersonalizedEvent.objects.create(event=event[0], user=user)
+
+
