@@ -11,7 +11,7 @@ import requests
 
 class AbstractStrategy(ABC):
 
-    def __modify(self, data):
+    def _modify(self, data):
         pass
 
     @abstractmethod
