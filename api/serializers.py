@@ -20,7 +20,7 @@ class SubjectSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Event
-        fields = ['id', 'name', 'urgency']
+        fields = ['id', 'name', 'urgency', 'deadline', 'created_at']
 
 
 class UserSerializer(serializers.ModelSerializer):

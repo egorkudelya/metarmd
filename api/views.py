@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from . import serializers
@@ -135,27 +134,6 @@ class PersonalizedEventView(APIView):
 
         serializer = serializers.PersonalizedEventSerializer(queryset, many=True)
         return Response(serializer.data)
-
-    def patch(self, request, **kwargs):
-        user_id = kwargs['user_id']
-        event_id = kwargs['event_id']
-        try:
-            cur_event = PersonalizedEvent.objects.filter(user__id=user_id, event__id=event_id).first()
-        except PersonalizedEvent.DoesNotExist:
-            raise Http404
-
-        print(cur_event.event_id)
-        vd = {'event': cur_event.event_id,
-              'create_pe': None,
-              'user': cur_event.user_id,
-              'is_completed': True,
-              'id': cur_event.id
-              }
-        serializer = serializers.PersonalizedEventSerializer(data=vd, partial=True,default=None)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MainContextEndPoint(APIView):

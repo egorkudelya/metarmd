@@ -33,7 +33,7 @@ class Event(models.Model):
     name = models.CharField(max_length=120, unique=True, verbose_name="Event")
     urgency = models.CharField(max_length=25, choices=URGENCY_CHOICES)
     created_at = models.DateTimeField(auto_now=True)
-    deadline = models.DateTimeField(null=True)
+    deadline = models.TextField(max_length=250)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
 
     def __str__(self):

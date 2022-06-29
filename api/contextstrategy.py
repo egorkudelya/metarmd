@@ -30,7 +30,7 @@ class ContextStrategy:
 class FirstClassSubject(AbstractStrategy):
 
     def createSerializer(self, request, context_id) -> Response:  # The first creation method
-        request.data["name"] = request.data["name"] + "0"
+        request.data["name"] = request.data["name"]
 
         serializer = serializers.SubjectSerializer(data=request.data)
         if serializer.is_valid():
@@ -42,7 +42,7 @@ class FirstClassSubject(AbstractStrategy):
 class SecondClassSubject(AbstractStrategy):
 
     def createSerializer(self, request, context_id) -> Response:  # The second creation method
-        request.data["name"] = request.data["name"] + "1"
+        request.data["name"] = request.data["name"]
 
         serializer = serializers.SubjectSerializer(data=request.data)
         if serializer.is_valid():
@@ -54,7 +54,7 @@ class SecondClassSubject(AbstractStrategy):
 class DefaultStrategy(AbstractStrategy):
 
     def createSerializer(self, request, context_id) -> Response:  # Default creation method
-        request.data["name"] = request.data["name"] + "2"
+        request.data["name"] = request.data["name"]
 
         serializer = serializers.SubjectSerializer(data=request.data)
         if serializer.is_valid():
